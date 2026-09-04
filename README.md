@@ -28,4 +28,10 @@ python3 scripts/check-layouts.py         # validate the generated Divi layouts
 python3 scripts/check-php-syntax.py wordpress
 ```
 
+## Deploying
+
+The child theme and setup plugin ship to Hostinger over SSH from GitHub
+Actions. See [DEPLOY.md](DEPLOY.md) for the pipeline and the one-time server
+setup.
+
 Design source: Claude Design project `8954fb5b`, Option A.

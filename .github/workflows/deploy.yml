@@ -1,0 +1,82 @@
+name: Deploy to Hostinger
+
+# Ships the child theme (and, on request, the setup plugin) into wp-content on
+# the Hostinger install. Everything else in this repository is build-time or
+# reference material and deliberately never leaves CI.
+#
+# The layouts under plugin/spe-site-importer/layouts/ are build artifacts of
+# scripts/build-divi.py, so they are regenerated here rather than trusted as
+# committed.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wordpress/themes/**'
+      - 'wordpress/plugin/**'
+      - 'scripts/build-divi.py'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+    inputs:
+      deploy_plugin:
+        description: 'Also deploy the setup plugin (only needed to bootstrap or re-run the site build)'
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy-hostinger
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build layouts and Divi exports
+        run: python3 scripts/build-divi.py
+
+      - name: Validate layouts
+        run: python3 scripts/check-layouts.py
+
+      - name: Check PHP syntax
+        run: python3 scripts/check-php-syntax.py wordpress
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          SSH_HOST: ${{ secrets.HOSTINGER_HOST }}
+          SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      # --delete is intentional: the theme directory is fully repository-managed,
+      # so anything on the server that is not in the repository is stale.
+      - name: Deploy child theme
+        env:
+          TARGET: ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}
+          WP_PATH: ${{ secrets.HOSTINGER_WP_PATH }}
+          SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -p $SSH_PORT" \
+            wordpress/themes/shear-performance/ \
+            "$TARGET:$WP_PATH/wp-content/themes/shear-performance/"
+
+      # The plugin carries 23 MB of media and is a one-shot bootstrap: once
+      # Tools -> Shear Performance Setup has run, the media lives in the Media
+      # Library and the plugin can be removed. So this is opt-in, not automatic.
+      - name: Deploy setup plugin
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy_plugin
+        env:
+          TARGET: ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}
+          WP_PATH: ${{ secrets.HOSTINGER_WP_PATH }}
+          SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_ed25519 -p $SSH_PORT" \
+            wordpress/plugin/spe-site-importer/ \
+            "$TARGET:$WP_PATH/wp-content/plugins/spe-site-importer/"
