@@ -1,0 +1,1053 @@
+/*
+Theme Name: Shear Performance EarthWorks
+Theme URI: https://www.shearearth.com/
+Description: Divi child theme for Shear Performance EarthWorks. Carries the whole
+             Option A design system: dark forestry palette, Barlow Semi Condensed
+             display type, and the section components the Divi layouts hook into.
+Author: Shear Performance EarthWorks
+Version: 1.0.0
+Template: Divi
+Text Domain: shear-performance
+*/
+
+/* ==========================================================================
+   Tokens
+   ========================================================================== */
+
+:root {
+  --spe-bg:            #141713;
+  --spe-bg-tint:       #1a2118;
+  --spe-panel:         #1b201a;
+  --spe-hero:          #1b1a1d;
+
+  --spe-ink:           #e7e9e3;
+  --spe-ink-strong:    #f2f4ee;
+  --spe-ink-muted:     #a9b2a4;
+  --spe-ink-soft:      #a8b6ac;
+  --spe-ink-dim:       #93a096;
+  --spe-ink-nav:       #c2cec6;
+  --spe-ink-label:     #8f988c;
+
+  --spe-green:         #1f5233;
+  --spe-green-bright:  #5fae7c;
+  --spe-green-grad:    linear-gradient(135deg, #3a7d52, #245c3a);
+
+  --spe-line:          #2b322a;
+  --spe-line-soft:     #3a4238;
+  --spe-line-header:   #262c22;
+  --spe-line-footer:   #263322;
+
+  --spe-display: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+  --spe-body:    "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+
+  --spe-shell:   1180px;   /* wide sections */
+  --spe-prose:   820px;    /* long-form reading measure */
+  --spe-gutter:  32px;
+}
+
+/* ==========================================================================
+   Base — Divi ships a light theme, so most of this is undoing that
+   ========================================================================== */
+
+html { scroll-behavior: smooth; }
+
+body,
+#page-container,
+#et-main-area,
+#main-content,
+#main-content .container {
+  background-color: transparent;
+}
+
+body {
+  background-color: var(--spe-bg);
+  background-image: radial-gradient(ellipse 1400px 900px at 15% 0%, var(--spe-bg-tint) 0%, var(--spe-bg) 55%);
+  color: var(--spe-ink);
+  font-family: var(--spe-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Divi paints a white sheet behind the content on some layouts. */
+#main-content .container:before { display: none; }
+
+body a { color: var(--spe-ink); text-decoration: none; }
+body a:hover { color: var(--spe-green-bright); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--spe-display);
+  font-weight: 700;
+  color: var(--spe-ink-strong);
+  letter-spacing: -0.005em;
+  padding-bottom: 0;
+}
+
+/* ==========================================================================
+   Layout shell
+   Sections and rows own their own spacing through the spe-* component
+   classes below, so Divi's percentage padding is cleared first.
+   ========================================================================== */
+
+/* Divi paints every section white by default; the sections that want a
+   colour set one explicitly further down. */
+.spe-section {
+  padding: 0;
+  background-color: transparent;
+}
+
+.spe-section > .et_pb_row {
+  width: 100%;
+  max-width: var(--spe-shell);
+  padding: 0 var(--spe-gutter);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Divi lays rows out with floated percentage columns. Every section here uses
+   grid or flex instead, so columns come out of the float flow entirely — which
+   in turn makes Divi's clearfix pseudo-elements unnecessary. Leaving them in
+   would add a phantom child to each grid and flex row. */
+.spe-section .et_pb_column {
+  float: none;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.spe-section > .et_pb_row::before,
+.spe-section > .et_pb_row::after,
+.spe-strip .et_pb_column::before,
+.spe-strip .et_pb_column::after,
+.spe-about-media::before,
+.spe-about-media::after,
+.spe-actions::before,
+.spe-actions::after { content: none; }
+
+/* Utility: a row that lays its columns out as an even, gap-based grid rather
+   than Divi's floated percentage columns. */
+.spe-duo > .et_pb_row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 56px;
+  align-items: center;
+}
+.spe-duo > .et_pb_row > .et_pb_column {
+  width: 100% !important;
+  margin: 0 !important;
+  float: none;
+}
+.spe-duo--top > .et_pb_row { align-items: start; }
+.spe-duo--wide > .et_pb_row { gap: 64px; }
+
+/* Divi wraps every module in a div; kill the default bottom margin so the
+   component rules below are the only thing setting rhythm. */
+.spe-section .et_pb_module { margin-bottom: 0; }
+
+/* ==========================================================================
+   Typography components
+   ========================================================================== */
+
+.spe-eyebrow .et_pb_text_inner,
+.spe-eyebrow {
+  font-family: var(--spe-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--spe-green-bright);
+}
+
+.spe-prose .et_pb_text_inner > *:last-child { margin-bottom: 0; }
+
+.spe-prose h2 {
+  font-size: 44px;
+  line-height: 1.1;
+  margin: 0 0 22px;
+}
+
+/* Opening line of a prose block: larger and lighter than the body copy. */
+.spe-prose .spe-lede {
+  font-family: var(--spe-body);
+  font-weight: 400;
+  font-size: 21px;
+  line-height: 1.6;
+  color: var(--spe-ink-strong);
+  margin: 0 0 20px;
+  text-wrap: pretty;
+}
+
+.spe-prose p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--spe-ink-muted);
+  margin: 0 0 18px;
+  text-wrap: pretty;
+}
+
+.spe-prose .spe-more {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: var(--spe-display);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--spe-green-bright);
+  border-bottom: 1px solid #3f5a49;
+  padding-bottom: 3px;
+}
+.spe-prose .spe-more:hover { color: var(--spe-ink-strong); border-bottom-color: var(--spe-ink-strong); }
+
+/* Narrow reading measure. */
+.spe-prose > .et_pb_row { max-width: var(--spe-prose); }
+
+.spe-prose--sm h2 { font-size: 40px; }
+.spe-prose--sm .spe-lede { font-size: 20px; line-height: 1.6; }
+.spe-prose--sm p { font-size: 16px; }
+
+.spe-body-copy p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--spe-ink-muted);
+  margin: 0 0 18px;
+  text-wrap: pretty;
+}
+.spe-body-copy p:last-child { margin-bottom: 0; }
+.spe-body-copy h2 { font-size: 38px; line-height: 1.15; margin: 0 0 22px; }
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+/* Divi emits its button rules at `body #page-container .et_pb_button`, so the
+   child theme has to out-specify that rather than just come later. */
+body #page-container .spe-section .et_pb_button {
+  font-family: var(--spe-display);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.4;
+  border: 0;
+  border-radius: 0;
+  padding: 15px 30px;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+
+/* Divi appends an arrow glyph to every button. */
+body #page-container .spe-section .et_pb_button:after {
+  display: none;
+  content: none;
+}
+
+body #page-container .spe-btn-primary .et_pb_button {
+  background-image: var(--spe-green-grad);
+  background-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 22px -8px rgba(47, 107, 69, .55);
+}
+body #page-container .spe-btn-primary .et_pb_button:hover {
+  background-image: none;
+  background-color: var(--spe-green);
+  color: #fff;
+}
+
+body #page-container .spe-btn-ghost .et_pb_button {
+  background: transparent;
+  color: var(--spe-ink);
+  border: 1px solid var(--spe-line-soft);
+}
+body #page-container .spe-btn-ghost .et_pb_button:hover {
+  border-color: var(--spe-ink-strong);
+  color: var(--spe-ink-strong);
+  background: transparent;
+}
+
+/* A pair of buttons sitting side by side. */
+.spe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.spe-actions .et_pb_button_module_wrapper { margin: 0 !important; }
+.spe-actions--center { justify-content: center; }
+
+/* ==========================================================================
+   Header (Divi Theme Builder template)
+   ========================================================================== */
+
+.et-l--header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+}
+/* The WordPress admin bar would otherwise sit on top of the sticky header. */
+.admin-bar .et-l--header { top: 32px; }
+
+.spe-header {
+  background: linear-gradient(#12160f, #0d1009);
+  border-bottom: 1px solid var(--spe-line-header);
+  box-shadow: 0 1px 24px rgba(47, 107, 69, .08);
+}
+
+.spe-header > .et_pb_row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: nowrap;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+.spe-header > .et_pb_row > .et_pb_column {
+  width: auto !important;
+  margin: 0 !important;
+  float: none;
+}
+.spe-header > .et_pb_row > .et_pb_column.spe-header-brand { flex: 0 0 auto; }
+.spe-header > .et_pb_row > .et_pb_column.spe-header-nav { flex: 1 1 auto; min-width: 0; }
+.spe-header > .et_pb_row > .et_pb_column.spe-header-cta { flex: 0 0 auto; }
+
+/* Brand lockup: logo plus the two-line wordmark. */
+.spe-brand { display: inline-flex; align-items: center; gap: 11px; }
+.spe-brand img { height: 40px; width: auto; display: block; }
+.spe-brand__name,
+.spe-brand__sub { display: block; line-height: 1.15; }
+.spe-brand__name {
+  font-family: var(--spe-display);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--spe-ink-strong);
+}
+.spe-brand__sub {
+  font-family: var(--spe-body);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8d9a90;
+}
+
+/* Divi menu module, restyled as the design's plain inline nav. */
+.spe-header .et_pb_menu,
+.spe-header .et_pb_menu__wrap { background: transparent; }
+.spe-header .et_pb_menu .et_pb_menu__menu { justify-content: flex-end; }
+.spe-header .et_pb_menu .et-menu {
+  gap: 22px;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+.spe-header .et_pb_menu .et-menu > li { padding: 0; margin: 0; }
+.spe-header .et_pb_menu .et-menu > li > a {
+  font-family: var(--spe-body);
+  font-size: 14px;
+  color: var(--spe-ink-nav);
+  padding-bottom: 3px;
+  border-bottom: 2px solid transparent;
+  opacity: 1;
+  white-space: nowrap;
+}
+.spe-header .et_pb_menu .et-menu > li > a:hover { color: #fff; opacity: 1; }
+.spe-header .et_pb_menu .et-menu > li.current-menu-item > a,
+.spe-header .et_pb_menu .et-menu > li.current_page_item > a {
+  color: #fff;
+  border-bottom-color: var(--spe-green);
+}
+/* Divi underlines the active item with its own pseudo-element. */
+.spe-header .et_pb_menu .et-menu > li > a:before { display: none; }
+
+/* Sub-menus keep the dark palette. */
+.spe-header .et_pb_menu .et-menu li ul.sub-menu {
+  background: #12160f;
+  border-color: var(--spe-green);
+}
+.spe-header .et_pb_menu .et-menu li ul.sub-menu li a { color: var(--spe-ink-nav); }
+
+/* Phone call-to-action. The "Call now" eyebrow is part of the button. */
+body #page-container .spe-phone .et_pb_button {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  background-image: var(--spe-green-grad);
+  background-color: transparent;
+  color: #fff;
+  padding: 11px 22px;
+  box-shadow: 0 6px 18px -8px rgba(47, 107, 69, .6);
+}
+body #page-container .spe-phone .et_pb_button:hover {
+  background-image: none;
+  background-color: var(--spe-green);
+  color: #fff;
+}
+body #page-container .spe-phone .et_pb_button:before {
+  content: "Call now";
+  display: inline-block;
+  position: static;
+  margin: 0 9px 0 0;
+  font-family: var(--spe-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: .75;
+  line-height: inherit;
+  color: inherit;
+  speak: never;
+}
+
+/* Divi's mobile menu toggle. */
+.spe-header .et_mobile_nav_menu { margin: 0; }
+.spe-header .mobile_menu_bar:before { color: var(--spe-ink-strong); }
+.spe-header .et_mobile_menu {
+  background: #12160f;
+  border-top-color: var(--spe-green);
+}
+.spe-header .et_mobile_menu li a { color: var(--spe-ink-nav); border-bottom-color: var(--spe-line-header); }
+
+/* ==========================================================================
+   Footer (Divi Theme Builder template)
+   ========================================================================== */
+
+.spe-footer {
+  background: linear-gradient(#161b14, #101410);
+  border-top: 1px solid var(--spe-line-footer);
+  color: var(--spe-ink-dim);
+}
+.spe-footer > .et_pb_row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 44px;
+  padding-bottom: 44px;
+}
+.spe-footer > .et_pb_row > .et_pb_column {
+  width: auto !important;
+  margin: 0 !important;
+  float: none;
+}
+
+.spe-footer .spe-brand img { height: 36px; opacity: .9; }
+.spe-footer .spe-brand__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--spe-ink-nav);
+}
+
+.spe-footer .et_pb_menu,
+.spe-footer .et_pb_menu__wrap { background: transparent; }
+.spe-footer .et_pb_menu .et_pb_menu__menu { justify-content: center; }
+.spe-footer .et_pb_menu .et-menu { gap: 24px; flex-wrap: wrap; }
+.spe-footer .et_pb_menu .et-menu > li { padding: 0; margin: 0; }
+.spe-footer .et_pb_menu .et-menu > li > a {
+  font-family: var(--spe-body);
+  font-size: 14px;
+  color: var(--spe-ink-dim);
+}
+.spe-footer .et_pb_menu .et-menu > li > a:hover { color: var(--spe-ink-strong); }
+.spe-footer .et_pb_menu .et-menu > li > a:before { display: none; }
+
+.spe-footer .spe-copyright,
+.spe-footer .spe-copyright p {
+  font-family: var(--spe-body);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--spe-ink-dim);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Home hero
+   ========================================================================== */
+
+.spe-hero {
+  isolation: isolate;
+  background-color: var(--spe-hero);
+  background-image: radial-gradient(ellipse 900px 600px at 50% -10%, rgba(47, 107, 69, .35), transparent 60%);
+  overflow: hidden;
+  text-align: center;
+}
+/* The hero is two rows (copy, then the button pair) so the buttons can sit
+   side by side; the section's vertical padding lives on the outer two. */
+.spe-hero > .et_pb_row { max-width: 900px; }
+.spe-hero > .et_pb_row:not(.spe-hero-backdrop) { z-index: 1; }
+.spe-hero > .et_pb_row:first-child { padding-top: 72px; }
+.spe-hero > .et_pb_row:last-child { padding-bottom: 84px; }
+
+.spe-hero-logo {
+  width: min(560px, 88vw);
+  margin-left: auto;
+  margin-right: auto;
+}
+.spe-hero-logo .et_pb_image_wrap,
+.spe-hero-logo img { width: 100%; height: auto; display: block; }
+
+.spe-hero h1 {
+  font-size: clamp(36px, 5vw, 60px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 10px 0 20px;
+  color: #fff;
+  text-wrap: balance;
+}
+.spe-hero .spe-hero-sub {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--spe-ink-soft);
+  max-width: 52ch;
+  margin: 0 auto 32px;
+}
+.spe-hero .spe-actions { margin-top: 0; }
+.spe-hero-actions > .et_pb_row { padding-top: 0; }
+
+/* The strip of four photos overlapping the bottom of the hero. */
+.spe-strip > .et_pb_row {
+  margin-top: -42px;
+  position: relative;
+  z-index: 1;
+}
+.spe-strip .et_pb_column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+.spe-strip .et_pb_image { margin: 0; }
+.spe-strip .et_pb_image .et_pb_image_wrap { display: block; width: 100%; }
+.spe-strip .et_pb_image img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, .6);
+}
+
+/* Real project media: preserve the full frame of the portrait footage. */
+.spe-story > .et_pb_row {
+  max-width: 1120px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 88px);
+}
+.spe-story > .et_pb_row > .et_pb_column {
+  width: 100% !important;
+  margin: 0 !important;
+  float: none;
+  min-width: 0;
+}
+.spe-story .et_pb_code { margin: 0; }
+.spe-film, .spe-photo-story { margin: 0; }
+.spe-film { max-width: 350px; margin-inline: auto; }
+.spe-film video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: contain;
+  background: #070a06;
+  border: 1px solid var(--spe-line-soft);
+  border-radius: 6px;
+  box-shadow: 0 18px 48px rgba(0,0,0,.25);
+}
+.spe-film figcaption, .spe-photo-story figcaption {
+  color: var(--spe-ink-soft);
+  font-size: 14px;
+  line-height: 1.5;
+  padding-top: 14px;
+}
+.spe-film figcaption span {
+  display: block;
+  color: var(--spe-ink-dim);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.spe-photo-story img {
+  display: block;
+  width: 100%;
+  max-height: 580px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.spe-film-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.spe-film-grid .spe-film { width: 100%; }
+.spe-motion-gallery h2 { margin-bottom: 32px; }
+.spe-gallery-intro { padding-top: 36px !important; }
+.spe-gallery-intro .spe-lede { max-width: 660px; color: var(--spe-ink-soft); font-size: 19px; }
+
+/* ==========================================================================
+   Bands and calls to action
+   ========================================================================== */
+
+.spe-band-about {
+  background: linear-gradient(135deg, #1b201a 0%, #182219 55%, #16241a 100%);
+  border-top: 1px solid var(--spe-line);
+  border-bottom: 1px solid var(--spe-line);
+}
+.spe-band-about > .et_pb_row { padding-top: 80px; padding-bottom: 80px; }
+.spe-band-about h2 { font-size: 38px; line-height: 1.15; margin: 0; }
+
+.spe-panel {
+  background: var(--spe-panel);
+  border-top: 1px solid var(--spe-line);
+}
+
+.spe-cta > .et_pb_row { padding-top: 80px; padding-bottom: 80px; }
+.spe-cta h2 { font-size: 36px; line-height: 1.15; margin: 0 0 16px; text-wrap: balance; }
+.spe-cta p {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--spe-ink-muted);
+  margin: 0;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.spe-cta .spe-actions { justify-content: flex-start; }
+body #page-container .spe-cta .et_pb_button { padding: 16px 32px; }
+
+/* Standalone section spacing helpers used by the page layouts. */
+.spe-pad-top-96  > .et_pb_row { padding-top: 96px; }
+.spe-pad-top-88  > .et_pb_row { padding-top: 88px; }
+.spe-pad-top-80  > .et_pb_row { padding-top: 80px; }
+.spe-pad-top-72  > .et_pb_row { padding-top: 72px; }
+.spe-pad-top-56  > .et_pb_row { padding-top: 56px; }
+.spe-pad-bot-88  > .et_pb_row { padding-bottom: 88px; }
+.spe-pad-bot-80  > .et_pb_row { padding-bottom: 80px; }
+
+/* ==========================================================================
+   Interior page title band
+   ========================================================================== */
+
+.spe-page-head {
+  background: var(--spe-panel);
+  border-bottom: 1px solid var(--spe-line);
+}
+.spe-page-head > .et_pb_row { padding-top: 64px; padding-bottom: 56px; }
+.spe-page-head h1 {
+  font-size: clamp(40px, 5.4vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.spe-page-head .spe-eyebrow { margin-bottom: 16px; }
+
+/* Services page: anchor links sitting beside the page title. */
+.spe-page-head--split > .et_pb_row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+}
+.spe-page-head--split > .et_pb_row > .et_pb_column {
+  width: auto !important;
+  margin: 0 !important;
+  float: none;
+}
+.spe-anchor-nav { display: flex; flex-wrap: wrap; gap: 22px; }
+.spe-anchor-nav a {
+  font-family: var(--spe-body);
+  font-size: 14px;
+  color: var(--spe-ink-label);
+  border-bottom: 1px solid var(--spe-line-soft);
+  padding-bottom: 3px;
+}
+.spe-anchor-nav a:hover { color: var(--spe-ink-strong); border-bottom-color: var(--spe-ink-strong); }
+
+/* Offset anchor targets so the sticky header does not cover the heading. */
+.spe-anchor { scroll-margin-top: 96px; }
+
+/* ==========================================================================
+   About page collage
+   ========================================================================== */
+
+.spe-about-media {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  max-width: 420px;
+  justify-self: end;
+  align-self: start;
+  width: 100%;
+}
+.spe-about-media .et_pb_image { margin: 0; height: 100%; }
+.spe-about-media .et_pb_image:first-child { grid-row: span 2; }
+.spe-about-media .et_pb_image .et_pb_image_wrap { display: block; height: 100%; }
+.spe-about-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.spe-about-media .et_pb_image:first-child img { aspect-ratio: 3 / 4; }
+.spe-about-media .et_pb_image:not(:first-child) img { aspect-ratio: 1 / 1; }
+
+.spe-about-copy .spe-lede {
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--spe-ink-strong);
+  margin: 0 0 22px;
+}
+.spe-about-copy p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--spe-ink-muted);
+  margin: 0 0 20px;
+}
+.spe-about-copy p:last-child { margin-bottom: 0; }
+.spe-about-copy h2 { font-size: 38px; margin: 0 0 26px; }
+
+/* ==========================================================================
+   Gallery
+   ========================================================================== */
+
+.spe-gallery .et_pb_gallery_items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.spe-gallery .et_pb_gallery_item {
+  width: 100% !important;
+  margin: 0 !important;
+  float: none !important;
+  clear: none !important;
+}
+.spe-gallery .et_pb_gallery_image {
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  display: block;
+}
+.spe-gallery .et_pb_gallery_image a,
+.spe-gallery .et_pb_gallery_image span { display: block; height: 100%; }
+.spe-gallery .et_pb_gallery_image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.spe-gallery .et_overlay { background: rgba(20, 23, 19, .45); border: 0; }
+.spe-gallery .et_overlay:before { color: var(--spe-ink-strong); }
+
+/* ==========================================================================
+   Contact page
+   ========================================================================== */
+
+.spe-contact > .et_pb_row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
+  gap: 72px;
+  align-items: start;
+  padding-top: 72px;
+  padding-bottom: 88px;
+}
+.spe-contact > .et_pb_row > .et_pb_column {
+  width: 100% !important;
+  margin: 0 !important;
+  float: none;
+}
+
+.spe-form.et_pb_contact_form_container {
+  border: 1px solid var(--spe-line);
+  background: var(--spe-panel);
+  padding: 32px;
+  margin: 0;
+}
+.spe-form .et_pb_contact_form { display: flex; flex-direction: column; gap: 18px; }
+.spe-form .et_pb_contact_field {
+  padding: 0 !important;
+  width: 100% !important;
+  float: none;
+}
+.spe-form .et_pb_contact_field_last { margin-top: 0; }
+.spe-form .et_pb_contact_form_label {
+  display: block;
+  position: static;
+  clip: auto;
+  height: auto;
+  width: auto;
+  margin: 0 0 7px;
+  overflow: visible;
+  font-family: var(--spe-body);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--spe-ink-label);
+}
+.spe-form .et_pb_contact_field input[type="text"],
+.spe-form .et_pb_contact_field input[type="email"],
+.spe-form .et_pb_contact_field input[type="tel"],
+.spe-form .et_pb_contact_field textarea,
+.spe-form .et_pb_contact_field select {
+  width: 100%;
+  border: 1px solid var(--spe-line-soft);
+  background-color: var(--spe-bg);
+  color: var(--spe-ink);
+  padding: 13px 14px;
+  font-family: var(--spe-body);
+  font-size: 15px;
+  border-radius: 0;
+}
+.spe-form .et_pb_contact_field textarea { resize: vertical; min-height: 150px; }
+.spe-form .et_pb_contact_field input:focus,
+.spe-form .et_pb_contact_field textarea:focus {
+  outline: none;
+  border-color: var(--spe-green-bright);
+}
+.spe-form .et_pb_contact_field ::placeholder { color: transparent; }
+
+body #page-container .spe-form .et_pb_contact_submit {
+  width: 100%;
+  margin-top: 4px;
+  background-image: var(--spe-green-grad);
+  background-color: transparent;
+  color: #fff;
+  border: 0;
+  border-radius: 0;
+  padding: 17px;
+  font-family: var(--spe-display);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+body #page-container .spe-form .et_pb_contact_submit:hover {
+  background-image: none;
+  background-color: var(--spe-green);
+  color: #fff;
+}
+body #page-container .spe-form .et_pb_contact_submit:after {
+  display: none;
+  content: none;
+}
+.spe-form .et_contact_bottom_container { float: none; text-align: left; margin: 0; }
+
+.spe-form .et_pb_contact_message {
+  padding: 48px 8px;
+  text-align: center;
+  font-family: var(--spe-display);
+  font-weight: 600;
+  font-size: 22px;
+  color: var(--spe-ink-strong);
+}
+.spe-form .et-pb-contact-message p { color: var(--spe-ink-muted); }
+
+/* Contact details list. */
+.spe-contact-details h2 { font-size: 36px; margin: 0 0 32px; }
+.spe-contact-row {
+  padding: 22px 0;
+  border-top: 1px solid var(--spe-line);
+}
+.spe-contact-row:last-of-type { border-bottom: 1px solid var(--spe-line); }
+.spe-contact-row__label {
+  font-family: var(--spe-body);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--spe-ink-label);
+  margin-bottom: 8px;
+}
+.spe-contact-row__value,
+.spe-contact-row__value a {
+  font-family: var(--spe-display);
+  font-weight: 600;
+  font-size: 19px;
+  color: var(--spe-ink);
+}
+.spe-contact-row__value--lg,
+.spe-contact-row__value--lg a { font-size: 24px; }
+
+/* Divi centres images by default; this one sits under the details list. */
+.spe-contact-photo {
+  margin: 32px 0 0;
+  max-width: 290px;
+}
+.spe-contact-photo img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+}
+
+/* ==========================================================================
+   Motion
+   ========================================================================== */
+
+@keyframes spe-logo-focus {
+  from { opacity: 0; filter: blur(18px); transform: scale(1.12); }
+  70%  { opacity: 1; filter: blur(2px);  transform: scale(1.01); }
+  to   { opacity: 1; filter: blur(0);    transform: scale(1); }
+}
+@keyframes spe-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes spe-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.spe-hero-logo { animation: spe-logo-focus 1.4s cubic-bezier(.16, .84, .28, 1) both; }
+.spe-hero h1 { animation: spe-rise .7s ease 1.25s both; }
+.spe-hero .spe-hero-sub { animation: spe-rise .7s ease 1.4s both; }
+.spe-hero .spe-actions { animation: spe-rise .7s ease 1.55s both; }
+.spe-strip > .et_pb_row { animation: spe-rise .9s ease 1.9s both; }
+.et-l--header .spe-header { animation: spe-fade .5s ease .15s both; }
+
+/* The visual builder re-renders modules constantly; animations there are noise. */
+.et-fb .spe-hero-logo,
+.et-fb .spe-hero h1,
+.et-fb .spe-hero .spe-hero-sub,
+.et-fb .spe-hero .spe-actions,
+.et-fb .spe-strip > .et_pb_row,
+.et-fb .et-l--header .spe-header { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spe-hero-logo,
+  .spe-hero h1,
+  .spe-hero .spe-hero-sub,
+  .spe-hero .spe-actions,
+  .spe-strip > .et_pb_row,
+  .et-l--header .spe-header {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 980px) {
+  .spe-header > .et_pb_row > .et_pb_column.spe-header-nav { flex: 1 1 auto; }
+  .spe-header .et_pb_menu .et_pb_menu__menu { display: none; }
+  .spe-header .et_mobile_nav_menu { display: block; float: right; }
+}
+
+@media (max-width: 860px) {
+  :root { --spe-gutter: 24px; }
+  .spe-prose h2 { font-size: 34px; }
+  .spe-prose--sm h2 { font-size: 32px; }
+  .spe-band-about h2,
+  .spe-about-copy h2 { font-size: 30px; }
+  .spe-cta h2 { font-size: 30px; }
+  .spe-hero > .et_pb_row:first-child { padding-top: 56px; }
+  .spe-hero > .et_pb_row:last-child { padding-bottom: 64px; }
+  .spe-about-media { justify-self: start; }
+  .spe-contact > .et_pb_row { gap: 48px; }
+}
+
+@media (max-width: 640px) {
+  .spe-header > .et_pb_row { gap: 12px; }
+  .spe-header .spe-brand__name,
+  .spe-header .spe-brand__sub { display: none; }
+  body #page-container .spe-phone .et_pb_button { padding: 10px 16px; }
+  body #page-container .spe-phone .et_pb_button:before { display: none; }
+  .spe-footer > .et_pb_row { justify-content: flex-start; }
+
+  .spe-strip .et_pb_column { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* The home page opens on the actual worksite. */
+.spe-hero > .spe-hero-backdrop {
+  position: absolute !important;
+  z-index: 0;
+  inset: 0;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100%;
+  padding: 0 !important;
+  pointer-events: none;
+}
+.spe-hero-backdrop .et_pb_column, .spe-hero-backdrop .et_pb_code { height: 100%; width: 100%; margin: 0; }
+.spe-hero-background { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; opacity: .45; }
+.spe-hero > .spe-hero-backdrop::before { content: ""; position: absolute; inset: 0; z-index: 10; background: linear-gradient(90deg, rgba(10,16,9,.8), rgba(10,16,9,.35), rgba(10,16,9,.8)); }
+.spe-hero > .et_pb_row:nth-child(2) { padding-top: 48px; }
+.spe-hero-logo { width: 220px; }
+.spe-hero > .et_pb_row:last-child { padding-bottom: 100px; }
+.spe-hero h1 { font-size: clamp(34px, 4.5vw, 58px); }
+.spe-strip .et_pb_image img { aspect-ratio: 4 / 3; }
+.spe-about-media { max-width: 520px; }
+.spe-about-media .et_pb_image:first-child { grid-column: 1 / -1; grid-row: auto; }
+.spe-about-media .et_pb_image:first-child img { aspect-ratio: 4 / 3; }
+.spe-about-media .et_pb_image:not(:first-child) img { aspect-ratio: 4 / 3; }
+.spe-gallery .et_pb_gallery_image { aspect-ratio: 4 / 3; border-radius: 4px; }
+a:focus-visible, video:focus-visible, summary:focus-visible { outline: 2px solid var(--spe-green); outline-offset: 5px; }
+@media (max-width: 860px) {
+  .spe-story > .et_pb_row { grid-template-columns: 1fr; gap: 28px; }
+  .spe-story .spe-film { max-width: 340px; }
+  .spe-photo-story { max-width: 520px; margin-inline: auto; }
+  .spe-film-grid { grid-template-columns: 1fr; gap: 40px; }
+  .spe-hero-logo { width: 160px; }
+  .spe-hero > .et_pb_row:nth-child(2) { padding-top: 36px; }
+}
+
+/* Touch navigation and tablet layouts. Keep the menu attached to the header
+   row so Divi does not constrain its dropdown to the toggle's narrow column. */
+@media (max-width: 980px) {
+  .spe-header > .et_pb_row { gap: 16px; padding-top: 10px; padding-bottom: 10px; }
+  .spe-header > .et_pb_row > .et_pb_column.spe-header-brand { flex: 1 1 auto; min-width: 0; }
+  .spe-header > .et_pb_row > .et_pb_column.spe-header-nav { flex: 0 0 auto; order: 3; position: static; }
+  .spe-header .spe-header-nav .et_pb_menu,
+  .spe-header .spe-header-nav .et_pb_menu_inner_container { position: static; }
+  .spe-header .mobile_menu_bar { display: flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; }
+  .spe-header .et_mobile_menu { left: var(--spe-gutter); width: calc(100% - 2 * var(--spe-gutter)); top: 100%; max-height: 70vh; overflow-y: auto; }
+  .spe-header .et_mobile_menu li a { min-height: 44px; padding: 12px 16px; }
+  .spe-footer .et_pb_menu .et_pb_menu__menu { display: flex; }
+  .spe-footer .et_mobile_nav_menu { display: none; }
+  .spe-footer .et_pb_menu .et-menu > li > a { display: flex; align-items: center; min-height: 44px; }
+  .spe-anchor-nav { gap: 8px 20px; }
+  .spe-anchor-nav a { display: flex; align-items: center; min-height: 44px; }
+  .spe-form .et_pb_contact_field input[type="text"],
+  .spe-form .et_pb_contact_field input[type="email"],
+  .spe-form .et_pb_contact_field input[type="tel"],
+  .spe-form .et_pb_contact_field textarea,
+  .spe-form .et_pb_contact_field select { font-size: 16px; min-height: 48px; }
+}
+
+@media (min-width: 641px) and (max-width: 980px) {
+  .spe-gallery .et_pb_gallery_items { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .spe-film-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  :root { --spe-gutter: 20px; }
+  .spe-header > .et_pb_row { gap: 10px; }
+  .spe-brand img { height: 38px; }
+  body #page-container .spe-phone .et_pb_button { min-height: 44px; display: flex; align-items: center; padding: 10px 12px; }
+  .spe-hero > .et_pb_row:nth-child(2) { padding-top: 28px; }
+  .spe-hero > .et_pb_row:last-child { padding-bottom: 72px; }
+  .spe-hero-logo { width: 140px; }
+  .spe-hero h1 { font-size: clamp(30px, 8vw, 40px); margin-top: 18px; }
+  .spe-hero .spe-hero-sub { font-size: 16px; margin-bottom: 24px; }
+  .spe-strip > .et_pb_row { margin-top: -24px; }
+  .spe-strip .et_pb_column { gap: 10px; }
+  .spe-page-head > .et_pb_row { padding-top: 36px; padding-bottom: 32px; }
+  .spe-page-head h1 { font-size: clamp(36px, 9vw, 44px); }
+  .spe-page-head--split > .et_pb_row { gap: 20px; }
+  .spe-prose h2, .spe-prose--sm h2 { font-size: 30px; }
+  .spe-prose .spe-lede, .spe-about-copy .spe-lede { font-size: 19px; line-height: 1.55; }
+  .spe-prose p, .spe-about-copy p { font-size: 16px; line-height: 1.7; }
+  .spe-prose .spe-more { display: inline-flex; align-items: center; min-height: 44px; }
+  .spe-duo > .et_pb_row, .spe-duo--wide > .et_pb_row { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .spe-pad-top-96 > .et_pb_row,
+  .spe-pad-top-88 > .et_pb_row,
+  .spe-pad-top-80 > .et_pb_row,
+  .spe-pad-top-72 > .et_pb_row { padding-top: 48px; }
+  .spe-pad-top-56 > .et_pb_row { padding-top: 28px; }
+  .spe-pad-bot-88 > .et_pb_row,
+  .spe-pad-bot-80 > .et_pb_row { padding-bottom: 48px; }
+  .spe-band-about > .et_pb_row, .spe-cta > .et_pb_row { padding-top: 48px; padding-bottom: 48px; }
+  .spe-actions { gap: 10px; }
+  .spe-actions .et_pb_button_module_wrapper { flex: 1 1 120px; }
+  body #page-container .spe-actions .et_pb_button { width: 100%; text-align: center; padding: 14px 12px; min-height: 48px; }
+  .spe-story .spe-film, .spe-film-grid .spe-film { width: min(100%, 320px, 38svh); }
+  .spe-photo-story img { max-height: 460px; }
+  .spe-gallery .et_pb_gallery_items { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .spe-gallery-intro { padding-top: 24px !important; }
+  .spe-gallery-intro .spe-lede { font-size: 17px; }
+  .spe-motion-gallery h2 { font-size: 30px; margin-bottom: 24px; }
+  .spe-contact > .et_pb_row { padding-top: 32px; padding-bottom: 48px; gap: 36px; }
+  .spe-form.et_pb_contact_form_container { padding: 20px; }
+  .spe-form .et_contact_bottom_container { width: 100%; }
+  .spe-contact-details h2 { font-size: 30px; margin-bottom: 24px; }
+  .spe-contact-row__value { overflow-wrap: anywhere; }
+  .spe-contact-photo { max-width: 100%; }
+  .spe-contact-photo img { aspect-ratio: 4 / 3; }
+  .spe-footer > .et_pb_row { gap: 16px; padding-top: 28px; padding-bottom: 28px; }
+  .spe-footer .et_pb_menu .et-menu { gap: 4px 20px; }
+  .spe-anchor { scroll-margin-top: 84px; }
+}
