@@ -28,6 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Build static preview
         run: python3 scripts/build-divi.py
 
