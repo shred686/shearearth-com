@@ -1,3 +1,4 @@
+# Builds the reviewable static site and publishes it at the repository Pages URL.
 name: Deploy preview to GitHub Pages
 
 on:
