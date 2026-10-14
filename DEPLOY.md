@@ -121,6 +121,26 @@ The dedicated local deployment key is ignored by Git in `.deploy-access/`;
 its private half is stored as an encrypted GitHub Actions secret. Keep this
 directory private.
 
+### Launch verification (2026-10-14)
+
+The redesign is published. All five pages were reviewed in Chrome at 1440px
+and 390px: images load, no horizontal overflow or JavaScript exceptions were
+observed, and the global header/footer render. The mobile menu and gallery
+lightbox work. All ten desktop/mobile video files return HTTP 206 for range
+requests. HTTPS is valid, HTTP and `www` redirect to the canonical HTTPS apex,
+and `/image-gallery/` redirects permanently to `/gallery/`.
+
+The home hero was subsequently corrected and rechecked at 1440px, 768px and
+390px: the logo, heading and supporting text share the viewport's centre,
+with consistent spacing and a compact header. The workflow purges WordPress
+and LiteSpeed caches after each deployment. The setup plugin is inactive.
+
+Two account settings remain: the contact form targets
+`service@shearearth.com`, but the domain currently has no MX records, so an
+existing receiving inbox or Hostinger email setup is needed. No test enquiry
+has been sent. Divi's theme update username/API key are also not configured;
+link the owner's Elegant Themes licence in Divi → Theme Options → Updates.
+
 ## Ongoing deploys
 
 Push to `main`. The workflow regenerates the layouts, validates them, and
