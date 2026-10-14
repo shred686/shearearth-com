@@ -9,6 +9,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/** Preserve the gallery address used by the previous site. */
+function spe_redirect_legacy_gallery() {
+	if ( is_404() && isset( $_SERVER['REQUEST_URI'] ) ) {
+		$path = wp_parse_url( wp_unslash( $_SERVER['REQUEST_URI'] ), PHP_URL_PATH );
+		if ( untrailingslashit( $path ) === untrailingslashit( wp_parse_url( home_url( '/image-gallery/' ), PHP_URL_PATH ) ) ) {
+			$gallery = get_page_by_path( 'gallery' );
+			if ( $gallery ) {
+				wp_safe_redirect( get_permalink( $gallery ), 301 );
+				exit;
+			}
+		}
+	}
+}
+add_action( 'template_redirect', 'spe_redirect_legacy_gallery', 1 );
+
 /**
  * Version stamp for the child stylesheet.
  *

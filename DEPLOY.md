@@ -87,6 +87,40 @@ Repository → Settings → Secrets and variables → Actions:
 6. Attach the global header and footer in Divi → Theme Builder.
 7. Delete the plugin from the server. Nothing depends on it afterwards.
 
+### Bootstrap through SSH instead of WP admin
+
+After the workflow has deployed both directories, activate the child theme
+and importer with WP-CLI. Deactivate the standalone `divi-builder` plugin if
+installed, because the Divi parent theme includes the builder itself.
+Copy `scripts/bootstrap-wordpress.php` to a private path outside `public_html`
+and run from the WordPress root:
+
+```sh
+wp eval-file /private/path/bootstrap-wordpress.php --user=<administrator-ID>
+wp plugin deactivate spe-site-importer
+wp cache flush
+wp litespeed-purge all
+```
+
+The script runs the importer, sets the site title, and attaches the global
+header and footer using the installed Divi 4 Theme Builder API. Re-running
+replaces the five page layouts with repository content; back up the database
+first if pages have been edited in WordPress. Do not put this CLI script in a
+public web directory.
+
+## Production connection
+
+The deployment connection was configured on 2026-10-14 for `shearearth.com`:
+SSH host `195.179.239.208`, port `65002`, user `u100732545`, WordPress root
+`/home/u100732545/domains/shearearth.com/public_html`. All five GitHub Actions
+secrets are configured. The initial file and database backup is stored on the
+server outside the web root at
+`/home/u100732545/backups/shearearth-prelaunch-20261014/`.
+
+The dedicated local deployment key is ignored by Git in `.deploy-access/`;
+its private half is stored as an encrypted GitHub Actions secret. Keep this
+directory private.
+
 ## Ongoing deploys
 
 Push to `main`. The workflow regenerates the layouts, validates them, and

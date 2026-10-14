@@ -61,6 +61,7 @@ jobs:
       - name: Check PHP syntax
         run: |
           find wordpress/themes wordpress/plugin -name '*.php' -print0 | xargs -0 -n 1 php -l
+          php -l scripts/bootstrap-wordpress.php
 
       - name: Configure SSH
         env:
