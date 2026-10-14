@@ -234,24 +234,24 @@ body #page-container .spe-section .et_pb_button:after {
   content: none;
 }
 
-body #page-container .spe-btn-primary .et_pb_button {
+body #page-container .et_pb_button.spe-btn-primary {
   background-image: var(--spe-green-grad);
   background-color: transparent;
   color: #fff;
   box-shadow: 0 8px 22px -8px rgba(47, 107, 69, .55);
 }
-body #page-container .spe-btn-primary .et_pb_button:hover {
+body #page-container .et_pb_button.spe-btn-primary:hover {
   background-image: none;
   background-color: var(--spe-green);
   color: #fff;
 }
 
-body #page-container .spe-btn-ghost .et_pb_button {
+body #page-container .et_pb_button.spe-btn-ghost {
   background: transparent;
   color: var(--spe-ink);
   border: 1px solid var(--spe-line-soft);
 }
-body #page-container .spe-btn-ghost .et_pb_button:hover {
+body #page-container .et_pb_button.spe-btn-ghost:hover {
   border-color: var(--spe-ink-strong);
   color: var(--spe-ink-strong);
   background: transparent;
@@ -358,7 +358,7 @@ body #page-container .spe-btn-ghost .et_pb_button:hover {
 .spe-header .et_pb_menu .et-menu li ul.sub-menu li a { color: var(--spe-ink-nav); }
 
 /* Phone call-to-action. The "Call now" eyebrow is part of the button. */
-body #page-container .spe-phone .et_pb_button {
+body #page-container .et_pb_button.spe-phone {
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
@@ -368,12 +368,12 @@ body #page-container .spe-phone .et_pb_button {
   padding: 11px 22px;
   box-shadow: 0 6px 18px -8px rgba(47, 107, 69, .6);
 }
-body #page-container .spe-phone .et_pb_button:hover {
+body #page-container .et_pb_button.spe-phone:hover {
   background-image: none;
   background-color: var(--spe-green);
   color: #fff;
 }
-body #page-container .spe-phone .et_pb_button:before {
+body #page-container .et_pb_button.spe-phone:before {
   content: "Call now";
   display: inline-block;
   position: static;
@@ -934,8 +934,8 @@ body #page-container .spe-form .et_pb_contact_submit:after {
   .spe-header > .et_pb_row { gap: 12px; }
   .spe-header .spe-brand__name,
   .spe-header .spe-brand__sub { display: none; }
-  body #page-container .spe-phone .et_pb_button { padding: 10px 16px; }
-  body #page-container .spe-phone .et_pb_button:before { display: none; }
+  body #page-container .et_pb_button.spe-phone { padding: 10px 16px; }
+  body #page-container .et_pb_button.spe-phone:before { display: none; }
   .spe-footer > .et_pb_row { justify-content: flex-start; }
 
   .spe-strip .et_pb_column { grid-template-columns: repeat(2, 1fr); }
@@ -1007,7 +1007,7 @@ a:focus-visible, video:focus-visible, summary:focus-visible { outline: 2px solid
   :root { --spe-gutter: 20px; }
   .spe-header > .et_pb_row { gap: 10px; }
   .spe-brand img { height: 38px; }
-  body #page-container .spe-phone .et_pb_button { min-height: 44px; display: flex; align-items: center; padding: 10px 12px; }
+  body #page-container .et_pb_button.spe-phone { min-height: 44px; display: flex; align-items: center; padding: 10px 12px; }
   .spe-hero > .et_pb_row:nth-child(2) { padding-top: 28px; }
   .spe-hero > .et_pb_row:last-child { padding-bottom: 72px; }
   .spe-hero-logo { width: 140px; }

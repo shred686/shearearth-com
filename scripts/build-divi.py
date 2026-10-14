@@ -852,8 +852,8 @@ def render_preview_body(content, current):
             )
         elif tag == "et_pb_button":
             out.append(
-                f'<div class="et_pb_button_module_wrapper et_pb_module {cls}">'
-                f'<a class="et_pb_button" href="{a.get("button_url", "#")}">'
+                f'<div class="et_pb_button_module_wrapper et_pb_module">'
+                f'<a class="et_pb_button {cls}" href="{a.get("button_url", "#")}">'
                 f'{a.get("button_text", "")}'
             )
         elif tag == "et_pb_menu":
