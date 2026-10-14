@@ -112,3 +112,12 @@ jobs:
             -e "ssh -i ~/.ssh/id_ed25519 -p $SSH_PORT" \
             wordpress/plugin/spe-site-importer/ \
             "$TARGET:$WP_PATH/wp-content/plugins/spe-site-importer/"
+
+      - name: Purge WordPress caches
+        env:
+          TARGET: ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}
+          WP_PATH: ${{ secrets.HOSTINGER_WP_PATH }}
+          SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          ssh -o BatchMode=yes -o ConnectTimeout=15 -i ~/.ssh/id_ed25519 -p "$SSH_PORT" "$TARGET" \
+            "cd '$WP_PATH' && wp cache flush && if wp cli has-command litespeed-purge; then wp litespeed-purge all; fi"
