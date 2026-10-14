@@ -26,6 +26,10 @@ everything after it.
 
 ## One-time setup
 
+Before changing the live site, take a Hostinger backup of its files and
+WordPress database. Confirm the production domain: this project uses
+`shearearth.com`. DNS setup alone does not install WordPress or Divi.
+
 ### 1. Collect the SSH details
 
 In hPanel: **Advanced → SSH Access**. Note the IP, username (`uNNNNNNNNN`) and
@@ -92,6 +96,39 @@ rsyncs the child theme. Because all the design lives in the theme's
 The plugin is not deployed on a push. Re-run the workflow manually with the
 plugin checkbox if you ever need to re-run the site build — for instance after
 adding new photography.
+
+## Upload through WordPress admin
+
+If SSH is not configured yet, create installable ZIPs locally:
+
+```sh
+python3 scripts/build-divi.py
+python3 scripts/check-layouts.py
+python3 scripts/check-php-syntax.py wordpress
+python3 scripts/package-wordpress.py
+```
+
+With WordPress and licensed Divi installed, upload
+`wordpress/dist/shear-performance.zip` under Appearance → Themes → Add New →
+Upload Theme, and `wordpress/dist/spe-site-importer.zip` under Plugins → Add
+New → Upload Plugin. Then follow steps 4–7 of the server setup above.
+
+The workflow checks that all five secrets are present, validates the private
+key, runs PHP's actual syntax checker, and confirms WordPress and the Divi
+parent theme exist at the configured server path before syncing files.
+The local Python PHP check is structural only; it does not execute PHP.
+
+## Verify after launch
+
+- Confirm HTTPS works for the apex and `www` domain, with one redirecting to
+  the chosen canonical domain.
+- Check Home, About, Services, Contact and Gallery on desktop and mobile,
+  including the global header/footer, navigation, photos and video playback.
+- Submit the Contact form and confirm receipt at `service@shearearth.com`.
+- Test the gallery lightbox and preserve or redirect the previous
+  `/image-gallery/` URL if it is still used.
+- Clear Hostinger/LiteSpeed and Divi caches, then check the public site while
+  logged out of WordPress.
 
 ### A caveat on `--delete`
 

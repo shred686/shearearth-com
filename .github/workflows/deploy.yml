@@ -33,6 +33,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check Hostinger configuration
+        env:
+          HOSTINGER_SSH_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          HOSTINGER_HOST: ${{ secrets.HOSTINGER_HOST }}
+          HOSTINGER_USER: ${{ secrets.HOSTINGER_USER }}
+          HOSTINGER_PORT: ${{ secrets.HOSTINGER_PORT }}
+          HOSTINGER_WP_PATH: ${{ secrets.HOSTINGER_WP_PATH }}
+        run: |
+          missing=0
+          for name in HOSTINGER_SSH_KEY HOSTINGER_HOST HOSTINGER_USER HOSTINGER_PORT HOSTINGER_WP_PATH; do
+            if [[ -z "${!name}" ]]; then
+              echo "::error::Missing repository secret: $name. See DEPLOY.md."
+              missing=1
+            fi
+          done
+          [[ "$missing" -eq 0 ]]
+          [[ "$HOSTINGER_PORT" =~ ^[0-9]+$ ]] && (( HOSTINGER_PORT >= 1 && HOSTINGER_PORT <= 65535 ))
+          [[ "$HOSTINGER_WP_PATH" =~ ^/[a-zA-Z0-9_./-]+$ && "$HOSTINGER_WP_PATH" != / && "$HOSTINGER_WP_PATH" != */ ]]
+
       - name: Build layouts and Divi exports
         run: python3 scripts/build-divi.py
 
@@ -40,7 +59,8 @@ jobs:
         run: python3 scripts/check-layouts.py
 
       - name: Check PHP syntax
-        run: python3 scripts/check-php-syntax.py wordpress
+        run: |
+          find wordpress/themes wordpress/plugin -name '*.php' -print0 | xargs -0 -n 1 php -l
 
       - name: Configure SSH
         env:
@@ -51,7 +71,18 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > /dev/null
           ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Check WordPress installation
+        env:
+          TARGET: ${{ secrets.HOSTINGER_USER }}@${{ secrets.HOSTINGER_HOST }}
+          WP_PATH: ${{ secrets.HOSTINGER_WP_PATH }}
+          SSH_PORT: ${{ secrets.HOSTINGER_PORT }}
+        run: |
+          ssh -o BatchMode=yes -o ConnectTimeout=15 -i ~/.ssh/id_ed25519 -p "$SSH_PORT" "$TARGET" \
+            "test -f '$WP_PATH/wp-load.php' && test -d '$WP_PATH/wp-content/themes/Divi' && test -d '$WP_PATH/wp-content/plugins'" \
+            || { echo '::error::SSH failed, WordPress path is incorrect, or the Divi parent theme is missing.'; exit 1; }
 
       # --delete is intentional: the theme directory is fully repository-managed,
       # so anything on the server that is not in the repository is stale.
